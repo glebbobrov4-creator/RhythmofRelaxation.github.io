@@ -136,62 +136,61 @@
             </div>
 
             <!-- Форма обратной связи -->
-            <div class="col-lg-6 mb-5">
-                <div class="card border-0 shadow-sm h-100">
-                    <div class="card-body p-4">
-                        <h3 class="card-title mb-4">Напишите нам</h3>
-                        <form id="contactForm">
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label for="firstName" class="form-label">Имя *</label>
-                                    <input type="text" class="form-control" id="firstName" required>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label for="lastName" class="form-label">Фамилия</label>
-                                    <input type="text" class="form-control" id="lastName">
-                                </div>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="email" class="form-label">Email *</label>
-                                <input type="email" class="form-control" id="email" required>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="phone" class="form-label">Телефон</label>
-                                <input type="tel" class="form-control" id="phone">
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="service" class="form-label">Услуга</label>
-                                <select class="form-select" id="service">
-                                    <option selected>Выберите услугу</option>
-                                    <option value="relax">Массаж лица</option>
-                                    <option value="sport">Перкуссионный массаж</option>
-                                    <option value="medical">Баночный массаж</option>
-                                    <option value="other">Другое</option>
-                                </select>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="message" class="form-label">Сообщение *</label>
-                                <textarea class="form-control" id="message" rows="4" required
-                                    placeholder="Опишите вашу проблему или вопрос..."></textarea>
-                            </div>
-
-                            <div class="form-check mb-4">
-                                <input class="form-check-input" type="checkbox" id="consent" required>
-                                <label class="form-check-label" for="consent">
-                                    Я согласен на обработку персональных данных
-                                </label>
-                            </div>
-
-                            <button type="submit" class="btn btn-primary btn-lg w-100">Отправить сообщение</button>
-                        </form>
+<div class="col-lg-6 mb-5">
+    <div class="card border-0 shadow-sm h-100">
+        <div class="card-body p-4">
+            <h3 class="card-title mb-4">Напишите нам</h3>
+            <form id="contactForm">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="firstName" class="form-label">Имя *</label>
+                        <input type="text" class="form-control" id="firstName" name="firstName" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="lastName" class="form-label">Фамилия</label>
+                        <input type="text" class="form-control" id="lastName" name="lastName">
                     </div>
                 </div>
-            </div>
+
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email *</label>
+                    <input type="email" class="form-control" id="email" name="email" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="phone" class="form-label">Телефон *</label>
+                    <input type="tel" class="form-control" id="phone" name="phone" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="service" class="form-label">Услуга</label>
+                    <select class="form-select" id="service" name="service">
+                        <option value="" selected>Выберите услугу</option>
+                        <option value="Массаж лица">Массаж лица</option>
+                        <option value="Перкуссионный массаж">Перкуссионный массаж</option>
+                        <option value="Баночный массаж">Баночный массаж</option>
+                        <option value="Другое">Другое</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="message" class="form-label">Сообщение *</label>
+                    <textarea class="form-control" id="message" name="message" rows="4" required
+                        placeholder="Опишите вашу проблему или вопрос..."></textarea>
+                </div>
+
+                <div class="form-check mb-4">
+                    <input class="form-check-input" type="checkbox" id="consent" required>
+                    <label class="form-check-label" for="consent">
+                        Я согласен на обработку персональных данных
+                    </label>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-lg w-100">Отправить сообщение</button>
+            </form>
         </div>
+    </div>
+</div>
 
         <!-- Карта -->
         <div class="row mb-5">
@@ -372,12 +371,68 @@
             }
             <script>
         // Обработка формы
-                document.getElementById('contactForm').addEventListener('submit', function (e) {
-                    e.preventDefault();
-                alert('Спасибо! Ваше сообщение отправлено. Мы свяжемся с вами в ближайшее время.');
-                this.reset();
+                <script>
+document.getElementById('contactForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    // Данные формы
+    const formData = {
+        firstName: document.getElementById('firstName').value,
+        lastName: document.getElementById('lastName').value,
+        email: document.getElementById('email').value,
+        phone: document.getElementById('phone').value,
+        service: document.getElementById('service').value,
+        message: document.getElementById('message').value
+    };
+    
+    // Форматируем сообщение для Telegram
+    const telegramMessage = `
+📨 <b>НОВАЯ ЗАЯВКА С САЙТА</b>
+
+👤 <b>Клиент:</b> ${formData.firstName} ${formData.lastName}
+📧 <b>Email:</b> ${formData.email}
+📞 <b>Телефон:</b> ${formData.phone}
+💆 <b>Услуга:</b> ${formData.service || 'Не выбрана'}
+💬 <b>Сообщение:</b>
+${formData.message}
+
+⏰ <i>${new Date().toLocaleString('ru-RU')}</i>
+    `;
+    
+    // Настройки бота (ЗАМЕНИТЕ НА СВОИ!)
+    const botToken = '8232876332:AAExCqNdPwAGKYFjtWDEZpHnxZGLiAqlBv4'; // Ваш токен бота
+    const chatId = '848053371'; // Ваш chat ID
+    
+    // Отправка в Telegram
+    fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            chat_id: chatId,
+            text: telegramMessage,
+            parse_mode: 'HTML'
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.ok) {
+            alert('✅ Спасибо! Ваше сообщение отправлено. Мы свяжемся с вами в ближайшее время.');
+            document.getElementById('contactForm').reset();
+        } else {
+            throw new Error('Ошибка Telegram API');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('❌ Ошибка отправки. Пожалуйста, позвоните нам: +7 (916) 577-08-68');
+    });
+});
+</script>
         });
     </script>
 </body>
+
 
 </html>
