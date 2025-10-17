@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="sours/styles/mycss.css">
+    <link rel="stylesheet" href="sours/styles/bgvideo.css">
+    <link rel="apple-touch-icon" sizes="180x180" href="sours/files/favicon_io/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="sours/files/favicon_io/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="sours/files/favicon_io/favicon-16x16.png">
+    <link rel="manifest" href="sours/files/favicon_io/site.webmanifest">
+    <title>RoR</title>
+</head>
+
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg bg-body-tertiary">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="/">
+                    <img src="sours/files/photo_5436130683845213040_y.jpg" alt="Логотип Rhythm of Relaxation">
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="/">Главная</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="pricing.html">Цены</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="aboutus.html">О нас</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="contacts.html">Контакты</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="reviews.html">Отзывы</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <section>
+        <!-- Герой секция с текстом и видео -->
+        <div class="hero-section">
+            <div class="container">
+                <div class="hero-content text-center">
+                    <h1 class="hero-title">Rhythm of Relaxation</h1>
+                    <p class="hero-subtitle">Профессиональный массаж для вашего благополучия</p>
+                    <a href="pricing.html" class="btn btn-primary hero-btn">Выбрать массаж</a>
+                </div>
+
+                <!-- Видео под текстом -->
+                <div class="hero-video mt-5">
+                    <div class="video-container">
+                        <video src="sours/files/fotor-video_enhancer-preview-20251015142847.mp4" type="video/mp4"
+                            autoplay muted loop playsinline class="hero-video-player">
+                        </video>
+                        <div class="video-overlay"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container-fluid mt-5">
+            <!-- Приветственная секция -->
+            <div class="row mb-5">
+                <div class="col-lg-8 mx-auto text-center">
+                    <h2 class="section-title">Добро пожаловать в мир релаксации</h2>
+                    <p class="section-subtitle">Мы предлагаем профессиональные массажные услуги, которые помогут вам
+                        восстановить силы, снять напряжение и обрести гармонию души и тела.</p>
+                </div>
+            </div>
+
+            <!-- Карусель услуг -->
+            <div class="row">
+                <div class="col-lg-10 mx-auto">
+                    <div id="servicesCarousel" class="carousel slide" data-bs-ride="carousel">
+                        <div class="carousel-indicators">
+                            <button type="button" data-bs-target="#servicesCarousel" data-bs-slide-to="0"
+                                class="active"></button>
+                            <button type="button" data-bs-target="#servicesCarousel" data-bs-slide-to="1"></button>
+                            <button type="button" data-bs-target="#servicesCarousel" data-bs-slide-to="2"></button>
+                        </div>
+
+                        <div class="carousel-inner rounded-4">
+                            <!-- Слайд 1 -->
+                            <div class="carousel-item active">
+                                <div class="carousel-content">
+                                    <div class="row align-items-stretch">
+                                        <div class="col-lg-6 col-md-6">
+                                            <div class="carousel-image-container">
+                                                <img src="sours/images/75s86v1hdjqhgarieq0ech42d6btdpuv.jpg"
+                                                    class="carousel-img" alt="Перкуссионный массаж">
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6 col-md-6">
+                                            <div class="carousel-text-content">
+                                                <h3>Перкуссионный массаж</h3>
+                                                <p class="service-description">
+                                                    Ритмичные удары руками или инструментом для улучшения кровотока,
+                                                    снятия мышечного напряжения и ускорения восстановления.
+                                                </p>
+                                                <div class="service-info">
+                                                    <span class="duration">⏱ 1 час</span>
+                                                    <span class="price">1 500 ₽</span>
+                                                </div>
+                                                <a href="pricing.html" class="btn btn-outline-primary">Подробнее</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Слайд 2 -->
+                            <div class="carousel-item">
+                                <div class="carousel-content">
+                                    <div class="row align-items-stretch">
+                                        <div class="col-lg-6 col-md-6">
+                                            <div class="carousel-image-container">
+                                                <img src="sours/images/Depositphotos_411452906_L-pic_32ratio_900x600-900x600-27307.jpg"
+                                                    class="carousel-img" alt="Массаж лица">
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6 col-md-6">
+                                            <div class="carousel-text-content">
+                                                <h3>Массаж лица</h3>
+                                                <p class="service-description">
+                                                    Техника ухода за кожей лица, улучшающая кровообращение,
+                                                    уменьшающая отечность и предотвращающая морщины.
+                                                </p>
+                                                <div class="service-info">
+                                                    <span class="duration">⏱ 1 час</span>
+                                                    <span class="price">2 000 ₽</span>
+                                                </div>
+                                                <a href="pricing.html" class="btn btn-outline-primary">Подробнее</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Слайд 3 -->
+                            <div class="carousel-item">
+                                <div class="carousel-content">
+                                    <div class="row align-items-stretch">
+                                        <div class="col-lg-6 col-md-6">
+                                            <div class="carousel-image-container">
+                                                <img src="sours/images/woman_experiencing_cupping_therapy_23_2148882160.jpg"
+                                                    class="carousel-img" alt="Массаж банками">
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6 col-md-6">
+                                            <div class="carousel-text-content">
+                                                <h3>Массаж банками</h3>
+                                                <p class="service-description">
+                                                    Использование вакуума для усиления циркуляции крови,
+                                                    удаления токсинов и борьбы с целлюлитом.
+                                                </p>
+                                                <div class="service-info">
+                                                    <span class="duration">⏱ 1 час</span>
+                                                    <span class="price">2 500 ₽</span>
+                                                </div>
+                                                <a href="pricing.html" class="btn btn-outline-primary">Подробнее</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button class="carousel-control-prev" type="button" data-bs-target="#servicesCarousel"
+                            data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Предыдущий</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#servicesCarousel"
+                            data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Следующий</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Преимущества -->
+            <div class="row mt-5">
+                <div class="col-lg-10 mx-auto">
+                    <div class="row benefits-section">
+                        <div class="col-lg-4 col-md-6 mb-4">
+                            <div class="benefit-card text-center">
+                                <div class="benefit-icon">💆‍♀️</div>
+                                <h4>Профессионализм</h4>
+                                <p>Опытные мастера с медицинским образованием</p>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6 mb-4">
+                            <div class="benefit-card text-center">
+                                <div class="benefit-icon">🌿</div>
+                                <h4>Натуральные средства</h4>
+                                <p>Используем только качественные масла и кремы</p>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6 mb-4">
+                            <div class="benefit-card text-center">
+                                <div class="benefit-icon">⚡</div>
+                                <h4>Быстрый результат</h4>
+                                <p>Ощутимое улучшение после первого сеанса</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CTA секция -->
+            <div class="row mt-5">
+                <div class="col-lg-8 mx-auto text-center">
+                    <div class="cta-section">
+                        <h3>Готовы к преображению?</h3>
+                        <p>Запишитесь на первый сеанс и почувствуйте разницу</p>
+                        <div class="cta-buttons">
+                            <a href="https://t.me/Rhythm_of_Relaxation_bot" class="btn btn-primary btn-lg">Записаться
+                                сейчас</a>
+                            <a href="contacts.html" class="btn btn-outline-secondary btn-lg">Контакты</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="mt-5">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-4 col-md-12 footer-text text-center">
+                    <p>Все права защищены © 2025</p>
+                </div>
+                <div class="col-lg-4 col-md-12 footer-text text-center">
+                    <p>Rhythm of Relaxation<br>Профессиональный массаж</p>
+                </div>
+                <!-- Еще меньшая иконка -->
+                <div class="col-lg-4 col-md-12 text-center">
+                    <div class="media-links">
+                        <a href="https://t.me/Rhythm_of_Relaxation_bot" class="telegram-link">
+                            <img src="sours/files/tg.png" alt="Telegram" class="footer-telegram small">
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

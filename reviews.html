@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="sours/styles/mycss.css">
+    <link rel="stylesheet" href="sours/styles/bgvideo.css">
+
+    <link rel="apple-touch-icon" sizes="180x180" href="sours/files/favicon_io/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="sours/files/favicon_io/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="sours/files/favicon_io/favicon-16x16.png">
+    <link rel="manifest" href="sours/files/favicon_io/site.webmanifest">
+    <title>RoR</title>
+</head>
+
+<body>
+
+    <header>
+        <nav class="navbar navbar-expand-lg bg-body-tertiary">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="/"><img src="sours/files/photo_5436130683845213040_y.jpg"
+                        alt="..."></a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link" aria-current="page" href="/">Главная</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="pricing.html">Цены</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="aboutus.html">О нас</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="contacts.html">Контакты</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="contacts.html">Отзывы</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+
+    <!-- Заголовок страницы -->
+    <section class="page-header">
+        <div class="container">
+            <h1 class="page-title">Отзывы клиентов</h1>
+            <p class="page-subtitle">Мнение тех, кто уже доверил мне своё здоровье и благополучие</p>
+        </div>
+    </section>
+
+
+
+    <!-- Форма для добавления отзывов -->
+    <section class="add-review-section">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="review-form-card">
+                        <h3 class="text-center mb-4">Оставьте свой отзыв</h3>
+                        <form id="reviewForm">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="name" class="form-label">Ваше имя *</label>
+                                    <input type="text" class="form-control" id="name" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="service" class="form-label">Вид массажа</label>
+                                    <select class="form-select" id="service">
+                                        <option value="">Выберите услугу</option>
+                                        <option value="Перкуссионный массаж">Перкуссионный массаж</option>
+                                        <option value="Массаж лица">Массаж лица</option>
+                                        <option value="Массаж банками">Массаж банками</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Оценка *</label>
+                                <div class="rating-stars">
+                                    <input type="radio" id="star5" name="rating" value="5">
+                                    <label for="star5">★</label>
+                                    <input type="radio" id="star4" name="rating" value="4">
+                                    <label for="star4">★</label>
+                                    <input type="radio" id="star3" name="rating" value="3">
+                                    <label for="star3">★</label>
+                                    <input type="radio" id="star2" name="rating" value="2">
+                                    <label for="star2">★</label>
+                                    <input type="radio" id="star1" name="rating" value="1">
+                                    <label for="star1">★</label>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="review" class="form-label">Ваш отзыв *</label>
+                                <textarea class="form-control" id="review" rows="4" required
+                                    placeholder="Поделитесь своими впечатлениями..."></textarea>
+                            </div>
+                            <div class="text-center">
+                                <button type="submit" class="cta-btn btn-primary">Отправить отзыв</button>
+                                <button type="button" class="btn btn-secondary ms-2" onclick="resetForm()"
+                                    id="cancelBtn" style="display: none;">
+                                    Отмена
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Блок для вывода реальных отзывов -->
+    <section class="real-reviews-section">
+        <div class="container">
+            <h2 class="text-center mb-5">Реальные отзывы клиентов</h2>
+            <div id="reviewsContainer" class="row">
+                <!-- Сюда будут добавляться реальные отзывы через JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Статистика -->
+    <section class="stats-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3 col-6">
+                    <div class="stat-item">
+                        <div class="stat-number">50+</div>
+                        <div class="stat-label">Довольных клиентов</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="stat-item">
+                        <div class="stat-number">98%</div>
+                        <div class="stat-label">Положительных отзывов</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="stat-item">
+                        <div class="stat-number">5</div>
+                        <div class="stat-label">Лет опыта</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA секция -->
+    <section class="cta-section">
+        <div class="container">
+            <h2 class="cta-title">Готовы записаться на сеанс?</h2>
+            <p class="lead mb-4">Оставьте заявку и я свяжусь с вами для консультации</p>
+            <a href="contacts.html" class="cta-btn">Записаться на прием</a>
+        </div>
+    </section>
+
+    <!-- Футер -->
+    <footer class="mt-5">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-4 col-md-12 footer-text text-center">
+                    <p>Все права защищены © 2025</p>
+                </div>
+                <div class="col-lg-4 col-md-12 footer-text text-center">
+                    <p>Rhythm of Relaxation<br>Профессиональный массаж</p>
+                </div>
+                <!-- Еще меньшая иконка -->
+                <div class="col-lg-4 col-md-12 text-center">
+                    <div class="media-links">
+                        <a href="https://t.me/Rhythm_of_Relaxation_bot" class="telegram-link">
+                            <img src="sours/files/tg.png" alt="Telegram" class="footer-telegram small">
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="sours/styles/reviews.js"></script>
+</body>
+
+</html>
