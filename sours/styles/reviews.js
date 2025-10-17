@@ -153,8 +153,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     window.loginAsAdmin = function() {
-        const password = prompt('Введите пароль для доступа к управлению отзывами:');
-        if (password === 'admin123') {
+        const password = prompt();
+        if (password === 'Glebas2404') {
             localStorage.setItem('isAdmin', 'true');
             showSuccessMessage('Режим администратора активирован!');
             refreshReviewsDisplay();
@@ -435,3 +435,4 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('✅ Система отзывов с экспортом в CSV готова!');
     console.log('Для экспорта отзывов войдите как администратор');
 });
+
