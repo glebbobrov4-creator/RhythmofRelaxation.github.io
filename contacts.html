@@ -136,61 +136,62 @@
             </div>
 
             <!-- Форма обратной связи -->
-<div class="col-lg-6 mb-5">
-    <div class="card border-0 shadow-sm h-100">
-        <div class="card-body p-4">
-            <h3 class="card-title mb-4">Напишите нам</h3>
-            <form id="contactForm">
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label for="firstName" class="form-label">Имя *</label>
-                        <input type="text" class="form-control" id="firstName" name="firstName" required>
+            <div class="col-lg-6 mb-5">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body p-4">
+                        <h3 class="card-title mb-4">Напишите нам</h3>
+                        <form action="https://formspree.io/f/xovkrpry" method="POST" id="contactForm">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="firstName" class="form-label">Имя *</label>
+                                    <input type="text" class="form-control" id="firstName" name="name" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="lastName" class="form-label">Фамилия</label>
+                                    <input type="text" class="form-control" id="lastName" name="lastname">
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email *</label>
+                                <input type="email" class="form-control" id="email" name="email" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="phone" class="form-label">Телефон *</label>
+                                <input type="tel" class="form-control" id="phone" name="phone" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="service" class="form-label">Услуга</label>
+                                <select class="form-select" id="service" name="service">
+                                    <option value="" selected>Выберите услугу</option>
+                                    <option value="Массаж лица">Массаж лица</option>
+                                    <option value="Перкуссионный массаж">Перкуссионный массаж</option>
+                                    <option value="Баночный массаж">Баночный массаж</option>
+                                    <option value="Другое">Другое</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="message" class="form-label">Сообщение *</label>
+                                <textarea class="form-control" id="message" name="message" rows="4" required
+                                    placeholder="Опишите вашу проблему или вопрос..."></textarea>
+                            </div>
+
+                            <div class="form-check mb-4">
+                                <input class="form-check-input" type="checkbox" id="consent" name="consent" required>
+                                <label class="form-check-label" for="consent">
+                                    Я согласен на обработку персональных данных
+                                </label>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary btn-lg w-100">Отправить сообщение</button>
+                        </form>
                     </div>
-                    <div class="col-md-6 mb-3">
-                        <label for="lastName" class="form-label">Фамилия</label>
-                        <input type="text" class="form-control" id="lastName" name="lastName">
-                    </div>
                 </div>
-
-                <div class="mb-3">
-                    <label for="email" class="form-label">Email *</label>
-                    <input type="email" class="form-control" id="email" name="email" required>
-                </div>
-
-                <div class="mb-3">
-                    <label for="phone" class="form-label">Телефон *</label>
-                    <input type="tel" class="form-control" id="phone" name="phone" required>
-                </div>
-
-                <div class="mb-3">
-                    <label for="service" class="form-label">Услуга</label>
-                    <select class="form-select" id="service" name="service">
-                        <option value="" selected>Выберите услугу</option>
-                        <option value="Массаж лица">Массаж лица</option>
-                        <option value="Перкуссионный массаж">Перкуссионный массаж</option>
-                        <option value="Баночный массаж">Баночный массаж</option>
-                        <option value="Другое">Другое</option>
-                    </select>
-                </div>
-
-                <div class="mb-3">
-                    <label for="message" class="form-label">Сообщение *</label>
-                    <textarea class="form-control" id="message" name="message" rows="4" required
-                        placeholder="Опишите вашу проблему или вопрос..."></textarea>
-                </div>
-
-                <div class="form-check mb-4">
-                    <input class="form-check-input" type="checkbox" id="consent" required>
-                    <label class="form-check-label" for="consent">
-                        Я согласен на обработку персональных данных
-                    </label>
-                </div>
-
-                <button type="submit" class="btn btn-primary btn-lg w-100">Отправить сообщение</button>
-            </form>
+            </div>
         </div>
-    </div>
-</div>
 
         <!-- Карта -->
         <div class="row mb-5">
@@ -354,12 +355,11 @@
     </footer>
 
 
-    <!-- Bootstrap JS -->
+     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Фикс для бургер-меню -->
     <script>
-        // Простой фикс для бургер-меню
+        // Фикс для бургер-меню
         document.addEventListener('DOMContentLoaded', function () {
             var navbarToggler = document.querySelector('.navbar-toggler');
             var navbarCollapse = document.querySelector('.navbar-collapse');
@@ -369,57 +369,17 @@
                     navbarCollapse.classList.toggle('show');
                 });
             }
-            <script>
-        // Обработка формы
-                <script>
-<script>
-document.getElementById('contactForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    // Собираем данные
-    const formData = {
-        firstName: document.getElementById('firstName').value,
-        lastName: document.getElementById('lastName').value || '',
-        email: document.getElementById('email').value,
-        phone: document.getElementById('phone').value,
-        service: document.getElementById('service').value || 'Не выбрана',
-        message: document.getElementById('message').value
-    };
-    
-    // Формируем письмо
-    const subject = 'Новая заявка с сайта Rhythm of Relaxation';
-    const body = `НОВАЯ ЗАЯВКА С САЙТА
 
-Имя: ${formData.firstName} ${formData.lastName}
-Email: ${formData.email}
-Телефон: ${formData.phone}
-Услуга: ${formData.service}
-
-Сообщение:
-${formData.message}
-
-Дата: ${new Date().toLocaleString('ru-RU')}`;
-
-    // Открываем почтовый клиент
-    const mailtoLink = `mailto:glebbobrov4@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    
-    // Показываем уведомление
-    alert(`✅ Спасибо, ${formData.firstName}! Открываю почтовый клиент...\n\nЕсли письмо не отправилось автоматически, скопируйте текст и отправьте вручную на glebbobrov4@gmail.com`);
-    
-    // Открываем почту
-    window.location.href = mailtoLink;
-    
-    // Сбрасываем форму
-    setTimeout(() => {
-        document.getElementById('contactForm').reset();
-    }, 1000);
-});
-</script>
-</script>
+            // Обработка формы Formspree
+            document.getElementById('contactForm').addEventListener('submit', function(e) {
+                // Форма отправляется автоматически на Formspree
+                // Formspree перешлет на вашу почту glebbobrov4@gmail.com
+                setTimeout(function() {
+                    alert('✅ Спасибо! Ваше сообщение отправлено. Мы свяжемся с вами в ближайшее время.');
+                }, 500);
+            });
         });
     </script>
 </body>
-
-
 </html>
 
