@@ -372,63 +372,49 @@
             <script>
         // Обработка формы
                 <script>
+<script>
 document.getElementById('contactForm').addEventListener('submit', function(e) {
     e.preventDefault();
     
-    // Данные формы
+    // Собираем данные
     const formData = {
         firstName: document.getElementById('firstName').value,
-        lastName: document.getElementById('lastName').value,
+        lastName: document.getElementById('lastName').value || '',
         email: document.getElementById('email').value,
         phone: document.getElementById('phone').value,
-        service: document.getElementById('service').value,
+        service: document.getElementById('service').value || 'Не выбрана',
         message: document.getElementById('message').value
     };
     
-    // Форматируем сообщение для Telegram
-    const telegramMessage = `
-📨 <b>НОВАЯ ЗАЯВКА С САЙТА</b>
+    // Формируем письмо
+    const subject = 'Новая заявка с сайта Rhythm of Relaxation';
+    const body = `НОВАЯ ЗАЯВКА С САЙТА
 
-👤 <b>Клиент:</b> ${formData.firstName} ${formData.lastName}
-📧 <b>Email:</b> ${formData.email}
-📞 <b>Телефон:</b> ${formData.phone}
-💆 <b>Услуга:</b> ${formData.service || 'Не выбрана'}
-💬 <b>Сообщение:</b>
+Имя: ${formData.firstName} ${formData.lastName}
+Email: ${formData.email}
+Телефон: ${formData.phone}
+Услуга: ${formData.service}
+
+Сообщение:
 ${formData.message}
 
-⏰ <i>${new Date().toLocaleString('ru-RU')}</i>
-    `;
+Дата: ${new Date().toLocaleString('ru-RU')}`;
+
+    // Открываем почтовый клиент
+    const mailtoLink = `mailto:glebbobrov4@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     
-    // Настройки бота (ЗАМЕНИТЕ НА СВОИ!)
-    const botToken = '8232876332:AAExCqNdPwAGKYFjtWDEZpHnxZGLiAqlBv4'; // Ваш токен бота
-    const chatId = '848053371'; // Ваш chat ID
+    // Показываем уведомление
+    alert(`✅ Спасибо, ${formData.firstName}! Открываю почтовый клиент...\n\nЕсли письмо не отправилось автоматически, скопируйте текст и отправьте вручную на glebbobrov4@gmail.com`);
     
-    // Отправка в Telegram
-    fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            chat_id: chatId,
-            text: telegramMessage,
-            parse_mode: 'HTML'
-        })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.ok) {
-            alert('✅ Спасибо! Ваше сообщение отправлено. Мы свяжемся с вами в ближайшее время.');
-            document.getElementById('contactForm').reset();
-        } else {
-            throw new Error('Ошибка Telegram API');
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('❌ Ошибка отправки. Пожалуйста, позвоните нам: +7 (916) 577-08-68');
-    });
+    // Открываем почту
+    window.location.href = mailtoLink;
+    
+    // Сбрасываем форму
+    setTimeout(() => {
+        document.getElementById('contactForm').reset();
+    }, 1000);
 });
+</script>
 </script>
         });
     </script>
@@ -436,3 +422,4 @@ ${formData.message}
 
 
 </html>
+
