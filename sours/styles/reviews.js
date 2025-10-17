@@ -1,18 +1,9 @@
 // sours/reviews.js
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('JS файл отзывов подключен!');
+    console.log('✅ Система отзывов запущена');
     
     const reviewForm = document.getElementById('reviewForm');
     const reviewsContainer = document.getElementById('reviewsContainer');
-    
-    // 🔧 НАСТРОЙКИ GOOGLE FORMS
-    const GOOGLE_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSf7vSMMPWk3_2gnZ3zb-ul-rYGiKpACQaU_ngAyEVP7fVDUPg/formResponse';
-    const FIELD_IDS = {
-        name: 'entry.638955049',       // Поле "Ваше имя"
-        service: 'entry.1815637733',   // Поле "Услуга"  
-        rating: 'entry.1750290322',    // Поле "Оценка"
-        text: 'entry.1566894512'       // Поле "Ваш отзыв"
-    };
     
     if (!reviewForm) {
         console.log('Форма отзывов не найдена');
@@ -26,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
     loadReviews();
     
     // Обработчик отправки формы
-    reviewForm.addEventListener('submit', async function(e) {
+    reviewForm.addEventListener('submit', function(e) {
         e.preventDefault();
         
         const name = document.getElementById('name').value.trim();
@@ -63,107 +54,87 @@ document.addEventListener('DOMContentLoaded', function() {
                 text: reviewText,
                 date: new Date().toLocaleDateString('ru-RU'),
                 timestamp: Date.now(),
-                userToken: generateUserToken(),
-                synced: false
+                userToken: generateUserToken()
             };
             
             // Сохраняем локально
-            saveReviewToLocal(newReview);
+            saveReview(newReview);
             addReviewToPage(newReview);
-            
-            // Пытаемся отправить в Google Forms
-            try {
-                await sendToGoogleForms(name, service, rating.value, reviewText);
-                newReview.synced = true;
-                updateReviewSyncStatus(newReview.id, true);
-                showSuccessMessage('✅ Отзыв отправлен! Будет виден в Google Forms');
-            } catch (error) {
-                console.log('Не удалось отправить в Google Forms:', error);
-                showSuccessMessage('📱 Отзыв сохранен локально!');
-            }
+            showSuccessMessage('✅ Отзыв сохранен!');
         }
         
         resetForm();
     });
     
-    // 🔧 Функция отправки в Google Forms
-    async function sendToGoogleForms(name, service, rating, text) {
-        console.log('🔄 Попытка отправки в Google Forms...', { name, service, rating, text });
-        
-        const formData = new URLSearchParams();
-        
-        // Заполняем данные формы
-        formData.append(FIELD_IDS.name, name);
-        formData.append(FIELD_IDS.service, service || 'Не указано');
-        formData.append(FIELD_IDS.rating, rating || '5');
-        formData.append(FIELD_IDS.text, text);
-        
-        try {
-            console.log('📤 Отправка данных:', formData.toString());
-            
-            const response = await fetch(GOOGLE_FORM_URL, {
-                method: 'POST',
-                body: formData,
-                mode: 'no-cors',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                }
-            });
-            
-            console.log('✅ Запрос отправлен (no-cors mode)');
-            return Promise.resolve();
-            
-        } catch (error) {
-            console.error('❌ Ошибка отправки:', error);
-            throw error;
-        }
-    }
-    
-    // 🔧 Синхронизация неотправленных отзывов
-    function syncPendingReviews() {
+    // 🔧 Функция экспорта в CSV для Google Sheets
+    window.exportReviewsToCSV = function() {
         const reviews = JSON.parse(localStorage.getItem('massageReviews') || '[]');
-        const pendingReviews = reviews.filter(review => !review.synced);
         
-        if (pendingReviews.length > 0) {
-            console.log(`🔄 Синхронизация ${pendingReviews.length} отзывов...`);
+        if (reviews.length === 0) {
+            alert('Нет отзывов для экспорта');
+            return;
         }
         
-        pendingReviews.forEach(async (review) => {
-            try {
-                await sendToGoogleForms(review.name, review.service, review.rating.toString(), review.text);
-                updateReviewSyncStatus(review.id, true);
-                console.log('✅ Отзыв синхронизирован:', review.id);
-            } catch (error) {
-                console.log('❌ Ошибка синхронизации:', review.id);
-            }
-        });
-    }
-    
-    // Запускаем синхронизацию каждые 30 секунд
-    setInterval(syncPendingReviews, 30000);
-    
-    // Функция обновления статуса синхронизации
-    function updateReviewSyncStatus(reviewId, synced) {
-        let reviews = JSON.parse(localStorage.getItem('massageReviews') || '[]');
-        const reviewIndex = reviews.findIndex(review => review.id === reviewId);
+        // Создаем CSV заголовки
+        let csv = 'Дата,Имя,Услуга,Оценка,Отзыв\n';
         
-        if (reviewIndex !== -1) {
-            reviews[reviewIndex].synced = synced;
-            localStorage.setItem('massageReviews', JSON.stringify(reviews));
+        // Добавляем данные
+        reviews.forEach(review => {
+            const date = review.date;
+            const name = `"${review.name.replace(/"/g, '""')}"`;
+            const service = `"${(review.service || 'Не указано').replace(/"/g, '""')}"`;
+            const rating = review.rating;
+            const text = `"${review.text.replace(/"/g, '""')}"`;
             
-            // Обновляем отображение
-            const reviewElement = document.querySelector(`[data-review-id="${reviewId}"]`);
-            if (reviewElement) {
-                const syncIndicator = reviewElement.querySelector('.sync-indicator');
-                if (syncIndicator) {
-                    syncIndicator.textContent = synced ? ' ✅' : ' ⏳';
-                    syncIndicator.title = synced ? 'Синхронизировано' : 'Ожидает синхронизации';
-                }
+            csv += `${date},${name},${service},${rating},${text}\n`;
+        });
+        
+        // Создаем и скачиваем файл
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        const url = URL.createObjectURL(blob);
+        
+        link.setAttribute('href', url);
+        link.setAttribute('download', `отзывы_${new Date().toISOString().split('T')[0]}.csv`);
+        link.style.visibility = 'hidden';
+        
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        showSuccessMessage(`📊 Экспортировано ${reviews.length} отзывов в CSV файл!`);
+        
+        // Инструкция для импорта в Google Sheets
+        setTimeout(() => {
+            if (confirm('Хотите узнать как импортировать CSV в Google Sheets?')) {
+                alert('Инструкция по импорту:\n\n1. Откройте Google Sheets\n2. Файл → Импорт → Загрузить\n3. Выберите скачанный CSV файл\n4. Выберите "Заменить электронную таблицу"\n5. Нажмите "Импорт данных"');
             }
+        }, 1000);
+    };
+    
+    // 🔧 Функция быстрого копирования в буфер обмена
+    window.copyReviewsToClipboard = function() {
+        const reviews = JSON.parse(localStorage.getItem('massageReviews') || '[]');
+        
+        if (reviews.length === 0) {
+            alert('Нет отзывов для копирования');
+            return;
         }
-    }
+        
+        let text = 'Дата\tИмя\tУслуга\tОценка\tОтзыв\n';
+        
+        reviews.forEach(review => {
+            text += `${review.date}\t${review.name}\t${review.service || 'Не указано'}\t${review.rating}\t${review.text}\n`;
+        });
+        
+        navigator.clipboard.writeText(text).then(() => {
+            showSuccessMessage('📋 Отзывы скопированы в буфер обмена!');
+        }).catch(err => {
+            alert('Ошибка копирования: ' + err);
+        });
+    };
 
-    // Генерация уникального токена пользователя
+    // Вспомогательные функции
     function generateUserToken() {
         let token = localStorage.getItem('userToken');
         if (!token) {
@@ -173,20 +144,17 @@ document.addEventListener('DOMContentLoaded', function() {
         return token;
     }
     
-    // Получение текущего токена пользователя
     function getCurrentUserToken() {
         return localStorage.getItem('userToken');
     }
     
-    // Проверка прав администратора
     function checkAdminStatus() {
         return localStorage.getItem('isAdmin') === 'true';
     }
     
-    // Функция входа в режим администратора
     window.loginAsAdmin = function() {
-        const password = prompt
-        if (password === 'Glebas2404') {
+        const password = prompt('Введите пароль для доступа к управлению отзывами:');
+        if (password === 'admin123') {
             localStorage.setItem('isAdmin', 'true');
             showSuccessMessage('Режим администратора активирован!');
             refreshReviewsDisplay();
@@ -197,14 +165,12 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     };
     
-    // Выход из режима администратора
     window.logoutAdmin = function() {
         localStorage.removeItem('isAdmin');
         showSuccessMessage('Режим администратора деактивирован');
         refreshReviewsDisplay();
     };
     
-    // Функция сброса формы
     function resetForm() {
         reviewForm.reset();
         editingReviewId = null;
@@ -216,7 +182,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Функция обновления отзыва (только для админа)
     function updateReview(reviewId, name, service, rating, text) {
         if (!isAdmin) return;
         
@@ -240,13 +205,11 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Функция удаления отзыва
     function deleteReview(reviewId) {
         const reviews = JSON.parse(localStorage.getItem('massageReviews') || '[]');
         const review = reviews.find(r => r.id === reviewId);
         const currentUserToken = getCurrentUserToken();
         
-        // Проверяем права: админ ИЛИ автор отзыва
         if (isAdmin || (review && review.userToken === currentUserToken)) {
             if (confirm('Вы уверены, что хотите удалить этот отзыв?')) {
                 let updatedReviews = reviews.filter(review => review.id !== reviewId);
@@ -259,7 +222,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Функция редактирования отзыва
     function editReview(reviewId) {
         if (!isAdmin) {
             alert('Только администратор может редактировать отзывы!');
@@ -270,30 +232,25 @@ document.addEventListener('DOMContentLoaded', function() {
         const review = reviews.find(r => r.id === reviewId);
         
         if (review) {
-            // Заполняем форму данными отзыва
             document.getElementById('name').value = review.name;
             document.getElementById('service').value = review.service;
             document.getElementById('review').value = review.text;
             
-            // Устанавливаем рейтинг
             const ratingInput = document.querySelector(`input[name="rating"][value="${review.rating}"]`);
             if (ratingInput) ratingInput.checked = true;
             
-            // Меняем режим формы
             editingReviewId = reviewId;
             const submitBtn = reviewForm.querySelector('button[type="submit"]');
             submitBtn.textContent = 'Обновить отзыв';
             submitBtn.classList.remove('btn-primary');
             submitBtn.classList.add('btn-warning');
             
-            // Прокручиваем к форме
             document.querySelector('.add-review-section').scrollIntoView({ 
                 behavior: 'smooth' 
             });
         }
     }
     
-    // Функция обновления отображения отзывов
     function refreshReviewsDisplay() {
         if (reviewsContainer) {
             reviewsContainer.innerHTML = '';
@@ -301,21 +258,21 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Сохранение отзыва в localStorage
-    function saveReviewToLocal(review) {
+    function saveReview(review) {
         let reviews = JSON.parse(localStorage.getItem('massageReviews') || '[]');
         reviews.unshift(review);
         localStorage.setItem('massageReviews', JSON.stringify(reviews));
     }
     
-    // Загрузка отзывов из localStorage
     function loadReviews() {
         const reviews = JSON.parse(localStorage.getItem('massageReviews') || '[]');
         reviews.forEach(review => addReviewToPage(review));
         updateAdminPanel();
+        
+        // Показываем статистику
+        console.log(`📊 Загружено ${reviews.length} отзывов`);
     }
     
-    // Добавление отзыва на страницу
     function addReviewToPage(review) {
         if (!reviewsContainer) return;
         
@@ -349,14 +306,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     <p class="real-review-text">${review.text}</p>
                     ${review.service ? `<span class="real-service-type">${review.service}</span>` : ''}
                     ${review.userToken === currentUserToken ? '<small class="text-muted d-block mt-2">Ваш отзыв</small>' : ''}
-                    ${!review.synced ? '<small class="text-warning d-block mt-1">⏳ Ожидает синхронизации</small>' : ''}
                 </div>
             </div>
         `;
         reviewsContainer.insertAdjacentHTML('beforeend', reviewHTML);
     }
     
-    // Обновление панели администратора
     function updateAdminPanel() {
         let adminPanel = document.getElementById('adminPanel');
         if (!adminPanel) {
@@ -369,12 +324,31 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
         
+        const reviews = JSON.parse(localStorage.getItem('massageReviews') || '[]');
+        
         if (isAdmin) {
             adminPanel.innerHTML = `
                 <div class="alert alert-info">
-                    <strong>Режим администратора активирован</strong>
-                    <button class="btn btn-sm btn-outline-danger ms-2" onclick="logoutAdmin()">Выйти</button>
-                    <button class="btn btn-sm btn-outline-warning ms-2" onclick="clearAllReviews()">Удалить все отзывы</button>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>Режим администратора</strong>
+                            <small class="ms-2">(${reviews.length} отзывов)</small>
+                        </div>
+                        <div>
+                            <button class="btn btn-sm btn-success me-2" onclick="exportReviewsToCSV()" title="Экспорт в CSV">
+                                📥 CSV
+                            </button>
+                            <button class="btn btn-sm btn-outline-secondary me-2" onclick="copyReviewsToClipboard()" title="Копировать в буфер">
+                                📋
+                            </button>
+                            <button class="btn btn-sm btn-outline-warning me-2" onclick="clearAllReviews()" title="Удалить все">
+                                🗑️ Все
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger" onclick="logoutAdmin()" title="Выйти">
+                                Выйти
+                            </button>
+                        </div>
+                    </div>
                 </div>
             `;
         } else {
@@ -383,13 +357,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     <button class="btn btn-sm btn-outline-primary" onclick="loginAsAdmin()">
                         Войти как администратор
                     </button>
+                    ${reviews.length > 0 ? `<small class="d-block mt-1">${reviews.length} отзывов сохранено</small>` : ''}
                 </div>
             `;
         }
     }
     
-    // Показать сообщение об успехе
     function showSuccessMessage(message) {
+        // Удаляем предыдущие сообщения
         const existingAlerts = document.querySelectorAll('.alert-success');
         existingAlerts.forEach(alert => alert.remove());
         
@@ -409,7 +384,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Показать сообщение об ошибке
     function showErrorMessage(message) {
         const alert = document.createElement('div');
         alert.style.cssText = 'background: #f8d7da; color: #721c24; padding: 10px; border-radius: 5px; margin-bottom: 15px;';
@@ -427,14 +401,19 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Функция для полной очистки всех отзывов (только для админа)
     window.clearAllReviews = function() {
         if (!isAdmin) {
             alert('Только администратор может удалять все отзывы!');
             return;
         }
         
-        if (confirm('ВНИМАНИЕ! Вы уверены, что хотите удалить ВСЕ отзывы? Это действие нельзя отменить.')) {
+        const reviews = JSON.parse(localStorage.getItem('massageReviews') || '[]');
+        if (reviews.length === 0) {
+            alert('Нет отзывов для удаления');
+            return;
+        }
+        
+        if (confirm(`ВНИМАНИЕ! Вы уверены, что хотите удалить ВСЕ отзывы (${reviews.length} шт.)? Это действие нельзя отменить.`)) {
             localStorage.removeItem('massageReviews');
             refreshReviewsDisplay();
             showSuccessMessage('Все отзывы удалены!');
@@ -447,24 +426,12 @@ document.addEventListener('DOMContentLoaded', function() {
     window.loginAsAdmin = loginAsAdmin;
     window.logoutAdmin = logoutAdmin;
     window.clearAllReviews = clearAllReviews;
+    window.exportReviewsToCSV = exportReviewsToCSV;
+    window.copyReviewsToClipboard = copyReviewsToClipboard;
     
     // Инициализация
     updateAdminPanel();
     
-    // Тестовая функция для проверки отправки
-    window.testGoogleForms = function() {
-        const testData = {
-            name: 'Тестовый пользователь',
-            service: 'Массаж лица',
-            rating: '5',
-            text: 'Это тестовый отзыв для проверки работы Google Forms'
-        };
-        
-        sendToGoogleForms(testData.name, testData.service, testData.rating, testData.text)
-            .then(() => console.log('✅ Тестовая отправка завершена'))
-            .catch(error => console.error('❌ Тестовая отправка не удалась:', error));
-    };
-    
-    console.log('✅ Система отзывов с Google Forms готова!');
-    console.log('Для тестирования отправки выполните: testGoogleForms()');
+    console.log('✅ Система отзывов с экспортом в CSV готова!');
+    console.log('Для экспорта отзывов войдите как администратор');
 });
