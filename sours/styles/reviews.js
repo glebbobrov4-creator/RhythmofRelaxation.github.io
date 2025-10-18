@@ -1,4 +1,4 @@
-// sours/styles/reviews.js - ОЧИЩЕННАЯ ВЕРСИЯ
+// sours/styles/reviews.js - ИСПРАВЛЕННАЯ ВЕРСИЯ
 document.addEventListener('DOMContentLoaded', function() {
     console.log('✅ Система отзывов запущена');
     
@@ -10,10 +10,10 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
     }
     
-    // 🔧 НАСТРОЙКИ FORMSPREE
+    // 🔧 НАСТРОЙКИ FORMSPREE 
     const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xeornwpg'; 
     
-    // Загружаем сохраненные отзывы
+    // Загружаем сохраненные отзывы (только динамические)
     loadReviews();
     
     // Обработчик отправки формы
@@ -58,7 +58,8 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Сохраняем локально
         saveReview(newReview);
-        addReviewToPage(newReview);
+        // Добавляем только ДИНАМИЧЕСКИЕ отзывы
+        addDynamicReviewToPage(newReview);
         
         // 🔧 ОТПРАВЛЯЕМ ОТЗЫВ НА FORMSPREE
         console.log('📤 Отправляем на Formspree...');
@@ -123,30 +124,25 @@ document.addEventListener('DOMContentLoaded', function() {
     
     function loadReviews() {
         const reviews = JSON.parse(localStorage.getItem('massageReviews') || '[]');
-        console.log('📂 Загружаем отзывы из localStorage:', reviews.length);
+        console.log('📂 Загружаем динамические отзывы из localStorage:', reviews.length);
         
-        // Очищаем контейнер
-        if (reviewsContainer) {
-            reviewsContainer.innerHTML = '';
-        }
-        
-        // Добавляем отзывы на страницу
-        reviews.forEach(review => addReviewToPage(review));
-        
-        // Если нет отзывов, показываем сообщение
-        if (reviews.length === 0 && reviewsContainer) {
-            reviewsContainer.innerHTML = `
-                <div class="col-12 text-center">
-                    <div class="no-reviews-message">
-                        <p class="text-muted">Пока нет отзывов. Будьте первым!</p>
-                    </div>
-                </div>
-            `;
-        }
+        // Добавляем только динамические отзывы
+        reviews.forEach(review => addDynamicReviewToPage(review));
     }
     
-    function addReviewToPage(review) {
+    // Добавляем только ДИНАМИЧЕСКИЕ отзывы (не трогаем статические)
+    function addDynamicReviewToPage(review) {
         if (!reviewsContainer) return;
+        
+        // Создаем контейнер для динамических отзывов если его нет
+        let dynamicContainer = document.getElementById('dynamicReviewsContainer');
+        if (!dynamicContainer) {
+            dynamicContainer = document.createElement('div');
+            dynamicContainer.id = 'dynamicReviewsContainer';
+            dynamicContainer.className = 'row';
+            // Вставляем после статических отзывов
+            reviewsContainer.appendChild(dynamicContainer);
+        }
         
         const reviewHTML = `
             <div class="col-lg-6 mb-4" data-review-id="${review.id}">
@@ -164,7 +160,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
             </div>
         `;
-        reviewsContainer.insertAdjacentHTML('beforeend', reviewHTML);
+        dynamicContainer.insertAdjacentHTML('beforeend', reviewHTML);
     }
     
     function showMessage(message, type) {
