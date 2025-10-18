@@ -1,4 +1,4 @@
-// sours/reviews.js
+// sours/styles/reviews.js - ОЧИЩЕННАЯ ВЕРСИЯ
 document.addEventListener('DOMContentLoaded', function() {
     console.log('✅ Система отзывов запущена');
     
@@ -10,8 +10,8 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
     }
     
-    // 🔧 НАСТРОЙКИ FORMSPREE 
-    const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xeornwpg';
+    // 🔧 НАСТРОЙКИ FORMSPREE
+    const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xeornwpg'; 
     
     // Загружаем сохраненные отзывы
     loadReviews();
@@ -25,19 +25,21 @@ document.addEventListener('DOMContentLoaded', function() {
         const rating = document.querySelector('input[name="rating"]:checked');
         const reviewText = document.getElementById('review').value.trim();
         
+        console.log('📝 Данные формы:', { name, service, rating: rating?.value, reviewText });
+        
         // Валидация
         if (!name) {
-            showErrorMessage('Пожалуйста, введите ваше имя');
+            showMessage('Пожалуйста, введите ваше имя', 'error');
             return;
         }
         
         if (!rating) {
-            showErrorMessage('Пожалуйста, поставьте оценку');
+            showMessage('Пожалуйста, поставьте оценку', 'error');
             return;
         }
         
         if (!reviewText) {
-            showErrorMessage('Пожалуйста, напишите отзыв');
+            showMessage('Пожалуйста, напишите отзыв', 'error');
             return;
         }
         
@@ -49,122 +51,87 @@ document.addEventListener('DOMContentLoaded', function() {
             rating: parseInt(rating.value),
             text: reviewText,
             date: new Date().toLocaleDateString('ru-RU'),
-            timestamp: Date.now(),
-            userToken: generateUserToken()
+            timestamp: Date.now()
         };
+        
+        console.log('💾 Сохраняем отзыв локально:', newReview);
         
         // Сохраняем локально
         saveReview(newReview);
         addReviewToPage(newReview);
         
         // 🔧 ОТПРАВЛЯЕМ ОТЗЫВ НА FORMSPREE
+        console.log('📤 Отправляем на Formspree...');
         sendReviewToFormspree(newReview);
         
-        showSuccessMessage('✅ Спасибо! Ваш отзыв отправлен и скоро появится на сайте.');
-        
+        showMessage('✅ Спасибо! Ваш отзыв отправлен.', 'success');
         resetForm();
     });
     
     // 🔧 ФУНКЦИЯ ОТПРАВКИ В FORMSPREE
     function sendReviewToFormspree(review) {
-        const formData = new FormData();
-        formData.append('Имя', review.name);
-        formData.append('Оценка', `${review.rating}/5`);
-        formData.append('Услуга', review.service || 'Не указана');
-        formData.append('Отзыв', review.text);
-        formData.append('Дата', review.date);
-        formData.append('Источник', 'Сайт Rhythm of Relaxation');
+        // Формируем данные для отправки
+        const data = {
+            name: review.name,
+            rating: `${review.rating}/5`,
+            service: review.service || 'Не указана',
+            review: review.text,
+            date: review.date,
+            source: 'Rhythm of Relaxation Website'
+        };
         
+        console.log('📨 Данные для Formspree:', data);
+        
+        // Отправляем запрос
         fetch(FORMSPREE_ENDPOINT, {
             method: 'POST',
-            body: formData,
             headers: {
+                'Content-Type': 'application/json',
                 'Accept': 'application/json'
-            }
+            },
+            body: JSON.stringify(data)
         })
         .then(response => {
+            console.log('📩 Response status:', response.status, response.statusText);
             if (response.ok) {
-                console.log('✅ Отзыв отправлен на Formspree');
+                console.log('✅ Отзыв успешно отправлен на Formspree');
                 return response.json();
             } else {
-                throw new Error('Ошибка отправки');
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
         })
         .then(data => {
-            console.log('Formspree ответ:', data);
+            console.log('✅ Formspree ответ:', data);
         })
         .catch(error => {
             console.error('❌ Ошибка отправки в Formspree:', error);
-            // Показываем сообщение, но не беспокоим пользователя
-            showOfflineMessage();
+            console.log('💾 Отзыв сохранен локально, но не отправлен на email');
         });
-    }
-    
-    function showOfflineMessage() {
-        // Создаем незаметное сообщение в консоли
-        console.log('📧 Отзыв сохранен локально. При подключении к интернету будет отправлен автоматически.');
     }
 
     // Вспомогательные функции
-    function generateUserToken() {
-        let token = localStorage.getItem('userToken');
-        if (!token) {
-            token = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-            localStorage.setItem('userToken', token);
-        }
-        return token;
-    }
-    
-    function getCurrentUserToken() {
-        return localStorage.getItem('userToken');
-    }
-    
     function resetForm() {
         reviewForm.reset();
-        const submitBtn = reviewForm.querySelector('button[type="submit"]');
-        if (submitBtn) {
-            submitBtn.textContent = 'Отправить отзыв';
-            submitBtn.classList.remove('btn-warning');
-            submitBtn.classList.add('btn-primary');
-        }
-    }
-    
-    function deleteReview(reviewId) {
-        const reviews = JSON.parse(localStorage.getItem('massageReviews') || '[]');
-        const review = reviews.find(r => r.id === reviewId);
-        const currentUserToken = getCurrentUserToken();
-        
-        if (review && review.userToken === currentUserToken) {
-            if (confirm('Вы уверены, что хотите удалить свой отзыв?')) {
-                let updatedReviews = reviews.filter(review => review.id !== reviewId);
-                localStorage.setItem('massageReviews', JSON.stringify(updatedReviews));
-                refreshReviewsDisplay();
-                showSuccessMessage('Ваш отзыв удален!');
-            }
-        } else {
-            alert('Вы можете удалять только свои отзывы!');
-        }
-    }
-    
-    function refreshReviewsDisplay() {
-        if (reviewsContainer) {
-            reviewsContainer.innerHTML = '';
-            loadReviews();
-        }
     }
     
     function saveReview(review) {
         let reviews = JSON.parse(localStorage.getItem('massageReviews') || '[]');
         reviews.unshift(review);
         localStorage.setItem('massageReviews', JSON.stringify(reviews));
+        console.log('💾 Отзыв сохранен локально. Всего отзывов:', reviews.length);
     }
     
     function loadReviews() {
         const reviews = JSON.parse(localStorage.getItem('massageReviews') || '[]');
-        reviews.forEach(review => addReviewToPage(review));
+        console.log('📂 Загружаем отзывы из localStorage:', reviews.length);
         
-        // Показываем статистику
-        console.log(`📊 Загружено ${reviews.length} отзывов`);
+        // Очищаем контейнер
+        if (reviewsContainer) {
+            reviewsContainer.innerHTML = '';
+        }
+        
+        // Добавляем отзывы на страницу
+        reviews.forEach(review => addReviewToPage(review));
         
         // Если нет отзывов, показываем сообщение
         if (reviews.length === 0 && reviewsContainer) {
@@ -181,9 +148,6 @@ document.addEventListener('DOMContentLoaded', function() {
     function addReviewToPage(review) {
         if (!reviewsContainer) return;
         
-        const currentUserToken = getCurrentUserToken();
-        const canDelete = review.userToken === currentUserToken;
-        
         const reviewHTML = `
             <div class="col-lg-6 mb-4" data-review-id="${review.id}">
                 <div class="real-review-card">
@@ -193,31 +157,23 @@ document.addEventListener('DOMContentLoaded', function() {
                             <div class="client-name">${review.name}</div>
                             <div class="review-date">${review.date}</div>
                         </div>
-                        <div class="review-actions">
-                            ${canDelete ? `
-                                <button class="btn-delete" onclick="deleteReview(${review.id})" title="Удалить отзыв">
-                                    🗑️
-                                </button>
-                            ` : ''}
-                        </div>
                     </div>
                     <div class="real-rating">${'★'.repeat(review.rating)}${'☆'.repeat(5 - review.rating)}</div>
                     <p class="real-review-text">${review.text}</p>
                     ${review.service ? `<span class="real-service-type">${review.service}</span>` : ''}
-                    ${review.userToken === currentUserToken ? '<small class="text-muted d-block mt-2">Ваш отзыв</small>' : ''}
                 </div>
             </div>
         `;
         reviewsContainer.insertAdjacentHTML('beforeend', reviewHTML);
     }
     
-    function showSuccessMessage(message) {
+    function showMessage(message, type) {
         // Удаляем предыдущие сообщения
-        const existingAlerts = document.querySelectorAll('.alert-success');
+        const existingAlerts = document.querySelectorAll('.alert-message');
         existingAlerts.forEach(alert => alert.remove());
         
         const alert = document.createElement('div');
-        alert.className = 'alert alert-success alert-dismissible fade show';
+        alert.className = `alert-message alert alert-${type === 'success' ? 'success' : 'danger'} alert-dismissible fade show mt-3`;
         alert.innerHTML = `
             ${message}
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
@@ -225,32 +181,20 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const form = document.querySelector('.review-form-card');
         if (form) {
-            form.insertBefore(alert, form.firstChild);
+            form.appendChild(alert);
         }
+        
+        // Автоматически скрываем через 5 секунд
+        setTimeout(() => {
+            if (alert.parentNode) {
+                alert.remove();
+            }
+        }, 5000);
     }
     
-    function showErrorMessage(message) {
-        // Удаляем предыдущие сообщения
-        const existingAlerts = document.querySelectorAll('.alert-danger');
-        existingAlerts.forEach(alert => alert.remove());
-        
-        const alert = document.createElement('div');
-        alert.className = 'alert alert-danger alert-dismissible fade show';
-        alert.innerHTML = `
-            ${message}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        `;
-        
-        const form = document.querySelector('.review-form-card');
-        if (form) {
-            form.insertBefore(alert, form.firstChild);
-        }
-    }
+    // Функция для ручного сброса формы (если нужна в HTML)
+    window.resetForm = resetForm;
     
-    // Добавляем функции в глобальную область видимости
-    window.deleteReview = deleteReview;
-    
-    console.log('✅ Система отзывов с Formspree готова!');
-    console.log('📧 Отзывы будут приходить на вашу почту через Formspree');
+    console.log('✅ Система отзывов готова!');
+    console.log('📧 Formspree endpoint:', FORMSPREE_ENDPOINT);
 });
-
