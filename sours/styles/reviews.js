@@ -1,9 +1,8 @@
-// sours/styles/reviews.js - ИСПРАВЛЕННАЯ ВЕРСИЯ
+// sours/styles/reviews.js - УПРОЩЕННАЯ ВЕРСИЯ
 document.addEventListener('DOMContentLoaded', function() {
     console.log('✅ Система отзывов запущена');
     
     const reviewForm = document.getElementById('reviewForm');
-    const reviewsContainer = document.getElementById('reviewsContainer');
     
     if (!reviewForm) {
         console.log('Форма отзывов не найдена');
@@ -11,10 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // 🔧 НАСТРОЙКИ FORMSPREE 
-    const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xeornwpg'; 
-    
-    // Загружаем сохраненные отзывы (только динамические)
-    loadReviews();
+    const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xeornwpg';
     
     // Обработчик отправки формы
     reviewForm.addEventListener('submit', function(e) {
@@ -56,10 +52,8 @@ document.addEventListener('DOMContentLoaded', function() {
         
         console.log('💾 Сохраняем отзыв локально:', newReview);
         
-        // Сохраняем локально
+        // Сохраняем локально (на будущее)
         saveReview(newReview);
-        // Добавляем только ДИНАМИЧЕСКИЕ отзывы
-        addDynamicReviewToPage(newReview);
         
         // 🔧 ОТПРАВЛЯЕМ ОТЗЫВ НА FORMSPREE
         console.log('📤 Отправляем на Formspree...');
@@ -120,47 +114,6 @@ document.addEventListener('DOMContentLoaded', function() {
         reviews.unshift(review);
         localStorage.setItem('massageReviews', JSON.stringify(reviews));
         console.log('💾 Отзыв сохранен локально. Всего отзывов:', reviews.length);
-    }
-    
-    function loadReviews() {
-        const reviews = JSON.parse(localStorage.getItem('massageReviews') || '[]');
-        console.log('📂 Загружаем динамические отзывы из localStorage:', reviews.length);
-        
-        // Добавляем только динамические отзывы
-        reviews.forEach(review => addDynamicReviewToPage(review));
-    }
-    
-    // Добавляем только ДИНАМИЧЕСКИЕ отзывы (не трогаем статические)
-    function addDynamicReviewToPage(review) {
-        if (!reviewsContainer) return;
-        
-        // Создаем контейнер для динамических отзывов если его нет
-        let dynamicContainer = document.getElementById('dynamicReviewsContainer');
-        if (!dynamicContainer) {
-            dynamicContainer = document.createElement('div');
-            dynamicContainer.id = 'dynamicReviewsContainer';
-            dynamicContainer.className = 'row';
-            // Вставляем после статических отзывов
-            reviewsContainer.appendChild(dynamicContainer);
-        }
-        
-        const reviewHTML = `
-            <div class="col-lg-6 mb-4" data-review-id="${review.id}">
-                <div class="real-review-card">
-                    <div class="real-review-header">
-                        <div class="real-client-avatar">${review.name.charAt(0).toUpperCase()}</div>
-                        <div class="client-info">
-                            <div class="client-name">${review.name}</div>
-                            <div class="review-date">${review.date}</div>
-                        </div>
-                    </div>
-                    <div class="real-rating">${'★'.repeat(review.rating)}${'☆'.repeat(5 - review.rating)}</div>
-                    <p class="real-review-text">${review.text}</p>
-                    ${review.service ? `<span class="real-service-type">${review.service}</span>` : ''}
-                </div>
-            </div>
-        `;
-        dynamicContainer.insertAdjacentHTML('beforeend', reviewHTML);
     }
     
     function showMessage(message, type) {
