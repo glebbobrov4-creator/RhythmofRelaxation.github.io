@@ -10,8 +10,8 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
     }
     
-    // 🔧 НАСТРОЙКИ FORMSPREE - ЗАМЕНИТЕ НА ВАШ FORMSPREE ID
-    const FORMSPREE_ENDPOINT = 'https://formspree.io/f/YOUR_FORMSPREE_ID_HERE';
+    // 🔧 НАСТРОЙКИ FORMSPREE 
+    const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xeornwpg';
     
     // Загружаем сохраненные отзывы
     loadReviews();
@@ -253,3 +253,4 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('✅ Система отзывов с Formspree готова!');
     console.log('📧 Отзывы будут приходить на вашу почту через Formspree');
 });
+
